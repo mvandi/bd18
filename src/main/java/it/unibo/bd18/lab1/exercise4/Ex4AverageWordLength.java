@@ -1,9 +1,10 @@
-package lab1.exercise4;
+package it.unibo.bd18.lab1.exercise4;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -12,42 +13,43 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
-public class Ex4InvertedIndex {
+public class Ex4AverageWordLength {
 
-    public static class Ex4Mapper extends Mapper<Object, Text, Text, LongWritable> {
-        private Text word = new Text();
+    public static class Ex4Mapper extends Mapper<Object, Text, Text, IntWritable> {
+
+        private Text word = new Text(), firstLetter = new Text();
+        private IntWritable wordLength = new IntWritable();
 
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            LongWritable lineNumber = (LongWritable) key;
             StringTokenizer itr = new StringTokenizer(value.toString());
-
             while (itr.hasMoreTokens()) {
                 word.set(itr.nextToken());
-                context.write(word, lineNumber);
+                firstLetter.set(word.toString().substring(0, 1));
+                wordLength.set(word.getLength());
+                context.write(firstLetter, wordLength);
             }
         }
     }
 
-    public static class Ex4Reducer extends Reducer<Text, LongWritable, Text, Text> {
-        public void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
-            Set<Long> offsets = new TreeSet<>();
-            for (LongWritable value : values) {
-                offsets.add(value.get());
+    public static class Ex4Reducer extends Reducer<Text, IntWritable, Text, DoubleWritable> {
+
+        public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+            double tot = 0, count = 0;
+            for (IntWritable val : values) {
+                count++;
+                tot += (double) val.get();
             }
 
-            context.write(key, new Text(offsets.toString()));
+            context.write(key, new DoubleWritable(tot / count));
         }
     }
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "Average word length by initial letter");
-        job.setJarByClass(Ex4InvertedIndex.class);
+        job.setJarByClass(Ex4AverageWordLength.class);
         if (args.length > 2) {
             if (Integer.parseInt(args[2]) >= 0) {
                 job.setNumReduceTasks(Integer.parseInt(args[2]));
@@ -65,10 +67,8 @@ public class Ex4InvertedIndex {
 
         job.setMapperClass(Ex4Mapper.class);
         job.setReducerClass(Ex4Reducer.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(LongWritable.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, inputPath);
         FileOutputFormat.setOutputPath(job, outputPath);
         System.exit(job.waitForCompletion(true) ? 0 : 1);

@@ -1,4 +1,4 @@
-package lab1.exercise3;
+package it.unibo.bd18.lab1.exercise3;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;

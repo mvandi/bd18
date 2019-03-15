@@ -1,4 +1,4 @@
-package util
+package it.unibo.bd18.util
 
 import org.apache.spark.SparkConf
 

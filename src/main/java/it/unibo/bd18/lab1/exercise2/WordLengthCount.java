@@ -1,9 +1,8 @@
-package lab1.exercise4;
+package it.unibo.bd18.lab1.exercise2;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -15,48 +14,42 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-public class Ex4AverageWordLength {
+public class WordLengthCount {
 
-    public static class Ex4Mapper extends Mapper<Object, Text, Text, IntWritable> {
+    public static class TokenizerMapper
+            extends Mapper<Object, Text, IntWritable, IntWritable> {
 
-        private Text word = new Text(), firstLetter = new Text();
+        private final static IntWritable one = new IntWritable(1);
+        private Text word = new Text();
         private IntWritable wordLength = new IntWritable();
 
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString());
             while (itr.hasMoreTokens()) {
                 word.set(itr.nextToken());
-                firstLetter.set(word.toString().substring(0, 1));
                 wordLength.set(word.getLength());
-                context.write(firstLetter, wordLength);
+                context.write(wordLength, one);
             }
         }
     }
 
-    public static class Ex4Reducer extends Reducer<Text, IntWritable, Text, DoubleWritable> {
+    public static class IntSumReducer
+            extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
+        private IntWritable result = new IntWritable();
 
-        public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            double tot = 0, count = 0;
+        public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+            int sum = 0;
             for (IntWritable val : values) {
-                count++;
-                tot += (double) val.get();
+                sum += val.get();
             }
-
-            context.write(key, new DoubleWritable(tot / count));
+            result.set(sum);
+            context.write(key, result);
         }
     }
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "Average word length by initial letter");
-        job.setJarByClass(Ex4AverageWordLength.class);
-        if (args.length > 2) {
-            if (Integer.parseInt(args[2]) >= 0) {
-                job.setNumReduceTasks(Integer.parseInt(args[2]));
-            }
-        } else {
-            job.setNumReduceTasks(1);
-        }
+        Job job = Job.getInstance(conf, "word length count");
 
         Path inputPath = new Path(args[0]), outputPath = new Path(args[1]);
         FileSystem fs = FileSystem.get(new Configuration());
@@ -65,12 +58,25 @@ public class Ex4AverageWordLength {
             fs.delete(outputPath, true);
         }
 
-        job.setMapperClass(Ex4Mapper.class);
-        job.setReducerClass(Ex4Reducer.class);
-        job.setOutputKeyClass(Text.class);
+        job.setJarByClass(WordLengthCount.class);
+        job.setMapperClass(TokenizerMapper.class);
+
+        job.setCombinerClass(IntSumReducer.class);
+        if (args.length > 2) {
+            if (Integer.parseInt(args[2]) >= 0) {
+                job.setNumReduceTasks(Integer.parseInt(args[2]));
+            }
+        } else {
+            job.setNumReduceTasks(1);
+        }
+
+        job.setReducerClass(IntSumReducer.class);
+        job.setOutputKeyClass(IntWritable.class);
         job.setOutputValueClass(IntWritable.class);
+
         FileInputFormat.addInputPath(job, inputPath);
         FileOutputFormat.setOutputPath(job, outputPath);
+
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }

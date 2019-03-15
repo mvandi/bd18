@@ -1,4 +1,4 @@
-package lab1.exercise2;
+package it.unibo.bd18.lab1.exercise1;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -14,30 +14,28 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-public class WordLengthCount {
+public class WordCount {
 
     public static class TokenizerMapper
-            extends Mapper<Object, Text, IntWritable, IntWritable> {
+            extends Mapper<Object, Text, Text, IntWritable> {
 
         private final static IntWritable one = new IntWritable(1);
         private Text word = new Text();
-        private IntWritable wordLength = new IntWritable();
 
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString());
             while (itr.hasMoreTokens()) {
                 word.set(itr.nextToken());
-                wordLength.set(word.getLength());
-                context.write(wordLength, one);
+                context.write(word, one);
             }
         }
     }
 
     public static class IntSumReducer
-            extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
+            extends Reducer<Text, IntWritable, Text, IntWritable> {
         private IntWritable result = new IntWritable();
 
-        public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+        public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
             for (IntWritable val : values) {
                 sum += val.get();
@@ -49,7 +47,7 @@ public class WordLengthCount {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "word length count");
+        Job job = Job.getInstance(conf, "word count");
 
         Path inputPath = new Path(args[0]), outputPath = new Path(args[1]);
         FileSystem fs = FileSystem.get(new Configuration());
@@ -58,20 +56,16 @@ public class WordLengthCount {
             fs.delete(outputPath, true);
         }
 
-        job.setJarByClass(WordLengthCount.class);
+        job.setJarByClass(WordCount.class);
         job.setMapperClass(TokenizerMapper.class);
 
-        job.setCombinerClass(IntSumReducer.class);
         if (args.length > 2) {
             if (Integer.parseInt(args[2]) >= 0) {
                 job.setNumReduceTasks(Integer.parseInt(args[2]));
             }
-        } else {
-            job.setNumReduceTasks(1);
         }
-
         job.setReducerClass(IntSumReducer.class);
-        job.setOutputKeyClass(IntWritable.class);
+        job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
         FileInputFormat.addInputPath(job, inputPath);

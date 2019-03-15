@@ -1,4 +1,4 @@
-package lab1.exercise3;
+package it.unibo.bd18.lab1.exercise3;
 
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
@@ -11,14 +11,15 @@ import org.apache.hadoop.mapred.Reporter;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class MaxTemperatureReducer extends MapReduceBase implements Reducer<Text, IntWritable, Text, DoubleWritable> {
+public class AvgTemperatureReducer extends MapReduceBase implements Reducer<Text, IntWritable, Text, DoubleWritable> {
 
     public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, DoubleWritable> output,
                        Reporter reporter) throws IOException {
-        int maxValue = Integer.MIN_VALUE;
+        double tot = 0, count = 0;
         while (values.hasNext()) {
-            maxValue = Math.max(maxValue, values.next().get());
+            count++;
+            tot += (double) values.next().get() / 10;
         }
-        output.collect(key, new DoubleWritable(((double) maxValue) / 10));
+        output.collect(key, new DoubleWritable(tot / count));
     }
 }
