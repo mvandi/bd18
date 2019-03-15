@@ -10,13 +10,8 @@ trait SparkSqlApp extends SparkAppBase {
     SparkSession.builder.config(conf).getOrCreate()
   }
 
-  protected[this] final def sc: SparkContext = spark.sparkContext
+  protected[this] override final def sc: SparkContext = spark.sparkContext
 
   protected[this] final def sqlContext: SQLContext = spark.sqlContext
-
-  object Implicits {
-    println("Implicits")
-    implicit lazy val _sc: SparkContext = sc
-  }
 
 }

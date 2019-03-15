@@ -4,13 +4,9 @@ import org.apache.spark.SparkContext
 
 trait SparkApp extends SparkAppBase {
 
-  protected[this] final lazy val sc: SparkContext = {
+  protected[this] override final lazy val sc: SparkContext = {
     require(conf != null, "conf cannot be null")
-    new SparkContext(conf)
-  }
-
-  object Implicits {
-    implicit lazy val _sc: SparkContext = sc
+    SparkContext.getOrCreate(conf)
   }
 
 }
