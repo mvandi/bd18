@@ -18,7 +18,6 @@ import java.util.StringTokenizer;
 public class Ex4AverageWordLength {
 
     public static class Ex4Mapper extends Mapper<Object, Text, Text, IntWritable> {
-
         private Text word = new Text(), firstLetter = new Text();
         private IntWritable wordLength = new IntWritable();
 
@@ -34,7 +33,6 @@ public class Ex4AverageWordLength {
     }
 
     public static class Ex4Reducer extends Reducer<Text, IntWritable, Text, DoubleWritable> {
-
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             double tot = 0, count = 0;
             for (IntWritable val : values) {
