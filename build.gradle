@@ -1,0 +1,28 @@
+plugins {
+    id 'scala'
+}
+
+group 'it.unibo.bd19'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
+
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4jVersion
+
+    compile group: 'org.apache.hadoop', name: 'hadoop-core', version: hadoopCoreVersion
+    compile group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopVersion
+    compile group: 'org.apache.hadoop', name: 'hadoop-hdfs', version: hadoopVersion
+
+    compile group: 'org.apache.spark', name: 'spark-core_2.12', version: sparkVersion
+    compile group: 'org.apache.spark', name: 'spark-sql_2.12', version: sparkVersion
+
+    testCompile group: 'junit', name: 'junit', version: junitVersion
+}
