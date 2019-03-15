@@ -5,10 +5,7 @@ import org.apache.spark.sql.{SQLContext, SparkSession}
 
 trait SqlApp extends SparkAppBase {
 
-  protected[this] final lazy val spark = {
-    require(conf != null, "conf cannot be null")
-    SparkSession.builder.config(conf).getOrCreate()
-  }
+  protected[this] final lazy val spark = SparkSession.builder.config(conf).getOrCreate()
 
   protected[this] override final def sc: SparkContext = spark.sparkContext
 
