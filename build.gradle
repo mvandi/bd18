@@ -2,7 +2,7 @@ plugins {
     id 'scala'
 }
 
-group 'it.unibo.bd19'
+group 'it.unibo'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.7
