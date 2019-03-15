@@ -7,9 +7,6 @@ object Exercise0 extends SparkApp {
 
   override protected[this] val conf = new SparkConf().setMaster("...").setAppName("Exercise1 App")
 
-  import Implicits._
-  import it.unibo.bd18.util.implicits._
-
   val capraRDD = sc.textFile("hdfs:/bigdata/dataset/capra/capra.txt").cache
   val divinacommediaRDD = sc.textFile("hdfs:/bigdata/dataset/divinacommedia").cache
 
