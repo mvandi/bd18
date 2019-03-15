@@ -8,7 +8,7 @@ private[util] trait SparkAppBase extends App {
 
   protected[this] def sc: SparkContext
 
-  object Implicits {
+  object implicits {
     println("Implicits")
     implicit lazy val _sc: SparkContext = sc
   }
