@@ -6,15 +6,20 @@ import org.apache.spark.rdd.RDD
 
 object WordCount extends SparkApp {
 
-  override protected[this] val conf = new SparkConf().setAppName("CountWordOccurrences App")
+  override protected[this] val conf = new SparkConf().setAppName("WordCount App")
 
   val capraRDD = sc.textFile("hdfs:/bigdata/dataset/capra/capra.txt").cache
   val divinacommediaRDD = sc.textFile("hdfs:/bigdata/dataset/divinacommedia").cache
 
-  def countWordOccurrences(rdd: RDD[String]): Map[String, Int] = rdd
-    .flatMap(_.split("\\s+").toSeq)
+  println(s"Capra result: ${op(capraRDD)}")
+//  println(s"Divina Commedia result: ${op(divinacommediaRDD)}")
+
+  def op(rdd: RDD[String]): Map[String, Int] = rdd
+    .flatMap(_.split("[^\\w']").toSeq)
     .groupBy(identity).map {
-    case (k, v) => k -> v.size
-  }.collect().toMap
+      case (k, v) => k -> v.size
+    }
+    .collect()
+    .toMap
 
 }

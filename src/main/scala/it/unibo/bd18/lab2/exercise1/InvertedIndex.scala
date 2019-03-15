@@ -6,12 +6,15 @@ import org.apache.spark.rdd.RDD
 
 object InvertedIndex extends SparkApp {
 
-  override protected[this] val conf = new SparkConf().setAppName("CountWordOccurrences App")
+  override protected[this] val conf = new SparkConf().setAppName("InvertedIndex App")
 
   val capraRDD = sc.textFile("hdfs:/bigdata/dataset/capra/capra.txt").cache
   val divinacommediaRDD = sc.textFile("hdfs:/bigdata/dataset/divinacommedia").cache
 
-  def invertedIndex(rdd: RDD[String]): Unit = rdd
+  println(s"Capra result: ${op(capraRDD)}")
+//  println(s"Divina Commedia result: ${op(divinacommediaRDD)}")
+
+  def op(rdd: RDD[String]): Unit = rdd
     .zipWithIndex()
     .flatMap {
       case (l, idx) => l.split("\\s+").map((_, idx)).toSeq
@@ -20,6 +23,7 @@ object InvertedIndex extends SparkApp {
     .map {
       case (w, it) => (w, it.map(_._2))
     }
-    .collect().toMap
+    .collect()
+    .toMap
 
 }

@@ -4,7 +4,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 private[util] trait SparkAppBase extends App {
 
-  protected[this] val conf: SparkConf
+  protected[this] val conf: SparkConf = new SparkConf()
 
   protected[this] def sc: SparkContext
 
