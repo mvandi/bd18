@@ -1,19 +1,22 @@
 package it.unibo.bd18.lab2
 
-import it.unibo.bd18.util.Logging
+import it.unibo.bd18.lab2.Lab2Base.implicits.RichString
 import org.apache.spark.SparkConf
 
-object Exercise0 extends Lab2Base with Logging {
+object Exercise0 extends Lab2Base {
 
   override protected[this] val conf = new SparkConf().setAppName("Exercise1 App")
 
-  capraRDD.collect { case x: Any => log.info(x) }
-  divinacommediaRDD.collect { case x: Any => log.info(x) }
+  // Show lines in a file
+  capraRDD.collect { case x: Any => println(x) }
+  divinacommediaRDD.collect { case x: Any => println(x) }
 
-  log.info(s"Capra line count: ${capraRDD.count()}")
-  log.info(s"Divina commedia line count: ${divinacommediaRDD.count()}")
+  // Count number of lines in a file
+  println(s"Capra line count: ${capraRDD.count}")
+  println(s"Divina commedia line count: ${divinacommediaRDD.count}")
 
-  capraRDD map(_.split("\\w_")) foreach(println(_))
-  divinacommediaRDD map(_.split("\\W_")) foreach(println(_))
+  // Split phrases into words
+  capraRDD map(_.tokenize) foreach(println(_))
+  divinacommediaRDD map(_.tokenize) foreach(println(_))
 
 }

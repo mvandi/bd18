@@ -5,12 +5,15 @@ import org.apache.spark.rdd.RDD
 
 private[exercise1] trait Ex1Base[K, V] extends Lab2Base {
 
-  println("Capra results")
-  op(capraRDD).foreach(x => println(s"${x._1} -> ${x._2}"))
-
-  //  println("Divina Commedia results")
-  //  op(divinacommediaRDD).foreach(x => println(s"${x._1} -> ${x._2}"))
+  printResults("Capra", op(capraRDD))
+//  println()
+//  printResults("Divina Commedia", op(divinacommediaRDD))
 
   protected[this] def op(rdd: RDD[String]): Map[K, V]
+
+  private def printResults(label: String, results: Map[K, V]): Unit = {
+    println(s"$label results")
+    results.foreach(x => println(s"${x._1} -> ${x._2}"))
+  }
 
 }
