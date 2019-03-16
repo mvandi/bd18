@@ -5,7 +5,7 @@ import org.apache.spark.SparkConf
 
 object Exercise0 extends Lab2Base {
 
-  override protected[this] val conf = new SparkConf().setAppName("Exercise1 App")
+  override protected[this] val conf = new SparkConf().setAppName("Exercise0 App")
 
   // Show lines in a file
   capraRDD.collect { case x: Any => println(x) }

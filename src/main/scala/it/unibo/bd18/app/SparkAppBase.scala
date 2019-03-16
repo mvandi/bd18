@@ -1,8 +1,8 @@
-package it.unibo.bd18.util
+package it.unibo.bd18.app
 
 import org.apache.spark.{SparkConf, SparkContext}
 
-private[util] trait SparkAppBase extends App {
+private[app] trait SparkAppBase extends App {
 
   protected[this] val conf: SparkConf = new SparkConf()
 

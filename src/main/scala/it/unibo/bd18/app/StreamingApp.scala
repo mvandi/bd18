@@ -1,4 +1,4 @@
-package it.unibo.bd18.util
+package it.unibo.bd18.app
 
 import org.apache.spark.streaming.{Duration, StreamingContext}
 

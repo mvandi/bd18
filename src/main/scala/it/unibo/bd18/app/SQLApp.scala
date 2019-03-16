@@ -1,9 +1,9 @@
-package it.unibo.bd18.util
+package it.unibo.bd18.app
 
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{SQLContext, SparkSession}
 
-trait SqlApp extends SparkAppBase {
+trait SQLApp extends SparkAppBase {
 
   protected[this] final lazy val spark = SparkSession.builder.config(conf).getOrCreate()
 

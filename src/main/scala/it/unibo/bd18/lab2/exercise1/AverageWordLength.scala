@@ -16,7 +16,7 @@ object AverageWordLength extends Ex1Base[String, Double] {
     .map {
       case (k, v) => k -> (v.map(_._2).sum / v.size.toDouble)
     }
-    .collect
+    .collect()
     .toMap
 
 }

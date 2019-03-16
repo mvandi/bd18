@@ -1,6 +1,6 @@
 package it.unibo.bd18.lab2
 
-import it.unibo.bd18.util.SparkApp
+import it.unibo.bd18.app.SparkApp
 
 private[lab2] trait Lab2Base extends SparkApp {
 

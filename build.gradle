@@ -12,6 +12,10 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    jar.archiveName = "${jar.baseName}.${jar.extension}"
+}
+
 dependencies {
     compile group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
 

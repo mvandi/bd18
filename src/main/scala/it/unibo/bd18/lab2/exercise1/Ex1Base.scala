@@ -11,7 +11,7 @@ private[exercise1] trait Ex1Base[K, V] extends Lab2Base {
 
   protected[this] def op(rdd: RDD[String]): Map[K, V]
 
-  private def printResults(label: String, results: Map[K, V]): Unit = {
+  private def printResults(label: String, results: Map[_, _]): Unit = {
     println(s"$label results")
     results.foreach(x => println(s"${x._1} -> ${x._2}"))
   }
