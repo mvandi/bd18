@@ -4,8 +4,8 @@ import it.unibo.bd18.app.SparkApp
 
 private[lab2] trait Lab2Base extends SparkApp {
 
-  final val capraRDD = sc.textFile("hdfs:/bigdata/dataset/capra/capra.txt").cache
-  final val divinacommediaRDD = sc.textFile("hdfs:/bigdata/dataset/divinacommedia").cache
+  final lazy val capraRDD = sc.textFile("hdfs:/bigdata/dataset/capra/capra.txt").cache
+  final lazy val divinacommediaRDD = sc.textFile("hdfs:/bigdata/dataset/divinacommedia").cache
 
 }
 
