@@ -6,17 +6,15 @@ import org.apache.spark.rdd.RDD
 
 object InvertedIndex extends Ex1Base[String, Iterable[Long]] {
 
+  import it.unibo.bd18.util.implicits.RichPairRDD
+
   override protected[this] val conf = new SparkConf().setAppName("InvertedIndex App")
 
   override protected[this] def op(rdd: RDD[String]): Map[String, Iterable[Long]] = rdd
     .zipWithIndex()
-    .flatMap {
-      case (l, idx) => l.tokenize.map(_.toLowerCase).map((_, idx))
-    }
+    .flatMapKeys(_.tokenize.map(_.toLowerCase))
     .groupBy(_._1)
-    .map {
-      case (w, it) => (w, it.map(_._2))
-    }
+    .mapValues(_.map(_._2))
     .collect()
     .toMap
 

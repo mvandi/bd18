@@ -12,9 +12,7 @@ object WordCount extends Ex1Base[String, Int] {
     .flatMap(_.tokenize)
     .map(_.toLowerCase)
     .groupBy(identity)
-    .map {
-      case (k, v) => k -> v.size
-    }
+    .mapValues(_.size)
     .collect()
     .toMap
 
