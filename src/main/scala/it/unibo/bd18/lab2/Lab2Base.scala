@@ -4,14 +4,14 @@ import it.unibo.bd18.app.SparkApp
 
 private[lab2] trait Lab2Base extends SparkApp {
 
-  final lazy val capraRDD = sc.textFile("hdfs:/bigdata/dataset/capra/capra.txt").cache
+  final lazy val capraRDD = sc.textFile("hdfs:/bigdata/dataset/capra").cache
   final lazy val divinacommediaRDD = sc.textFile("hdfs:/bigdata/dataset/divinacommedia").cache
 
 }
 
 private[lab2] object Lab2Base {
 
-  private val SPLIT_REGEX = "((\\b[^\\s]+\\b)((?<=\\.\\w).)?)"
+  private val SPLIT_REGEX = "[\\W_]+"
 
   object implicits {
 
