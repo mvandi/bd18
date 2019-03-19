@@ -12,9 +12,7 @@ object WordLengthCount extends Ex1Base[Int, Int] {
     .flatMap(_.tokenize)
     .map(_.length)
     .groupBy(identity)
-    .map {
-      case (k, v) => k -> v.size
-    }
+    .mapValues(_.size)
     .collect()
     .toMap
 

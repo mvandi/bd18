@@ -12,10 +12,8 @@ object AverageWordLength extends Ex1Base[String, Double] {
     .flatMap(_.tokenize)
     .map(_.toLowerCase)
     .map(x => (x.firstLetter, x.length))
-    .groupBy(_._1)
-    .map {
-      case (k, v) => k -> (v.map(_._2).sum / v.size.toDouble)
-    }
+    .groupByKey()
+    .mapValues((x: Iterable[Int]) => x.sum / x.size.toDouble)
     .collect()
     .toMap
 

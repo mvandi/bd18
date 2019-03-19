@@ -22,4 +22,14 @@ package object implicits {
     def apply(sqlText: String): DataFrame = sqlContext.sql(sqlText)
   }
 
+  implicit class RichPairRDD[K, V](private val rdd: RDD[(K, V)]) {
+    def filterByKey(f: K => Boolean): RDD[(K, V)] = rdd.filter(x => f(x._1))
+
+    def filterByValue(f: V => Boolean): RDD[(K, V)] = rdd.filter(x => f(x._2))
+
+    def mapKeys[U](f: K => U): RDD[(U, V)] = rdd.map(x => (f(x._1), x._2))
+
+    def flatMapKeys[U](f: K => TraversableOnce[U]): RDD[(U, V)] = rdd.flatMap(x => f(x._1).map((_, x._2)))
+  }
+
 }
