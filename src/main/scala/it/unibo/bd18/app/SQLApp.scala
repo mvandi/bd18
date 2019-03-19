@@ -9,6 +9,6 @@ trait SQLApp extends SparkAppBase {
 
   protected[this] override final def sc: SparkContext = spark.sparkContext
 
-  protected[this] final def sqlContext: SQLContext = spark.sqlContext
+  protected[this] final def sql: SQLContext = spark.sqlContext
 
 }

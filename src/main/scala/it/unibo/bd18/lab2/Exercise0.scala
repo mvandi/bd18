@@ -1,6 +1,6 @@
 package it.unibo.bd18.lab2
 
-import it.unibo.bd18.lab2.Lab2Base.implicits.RichString
+import Lab2Base.implicits.RichString
 import org.apache.spark.SparkConf
 
 object Exercise0 extends Lab2Base {
