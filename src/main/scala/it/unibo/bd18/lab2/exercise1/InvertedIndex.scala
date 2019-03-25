@@ -11,6 +11,7 @@ object InvertedIndex extends Ex1Base[String, Iterable[Long]] {
   override protected[this] val conf = new SparkConf().setAppName("InvertedIndex App")
 
   override protected[this] def op(rdd: RDD[String]): Map[String, Iterable[Long]] = rdd
+
     .zipWithIndex()
     .flatMapKeys(_.tokenize.map(_.toLowerCase))
     .groupByKey()

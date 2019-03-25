@@ -13,7 +13,7 @@ object Exercise0 extends Lab2Base {
 
   // Count number of lines in a file
   println(s"Capra line count: ${capraRDD.count}")
-  println(s"Divina commedia line count: ${divinacommediaRDD.count}")
+  println(s"Divina Commedia line count: ${divinacommediaRDD.count}")
 
   // Split phrases into words
   capraRDD map(_.tokenize) foreach(println(_))

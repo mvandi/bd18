@@ -18,8 +18,22 @@ package object implicits {
     def toRDD(implicit sc: SparkContext): RDD[T] = sc.makeRDD(seq)
   }
 
+  implicit class RichSparkContext(private val sc: SparkContext) {
+    def executorCount: Int = sc.statusTracker.getExecutorInfos.length - 1
+
+    def coresPerExecutor: Int = sc.range(0, 1).map(_ => Runtime.getRuntime.availableProcessors).collect.head
+
+    def coreCount: Int = coreCount(coresPerExecutor)
+
+    def coreCount(coresPerExecutor: Int = this.coresPerExecutor): Int = executorCount * coresPerExecutor
+  }
+
   implicit class RichSQLContext(private val sqlContext: SQLContext) {
     def apply(sqlText: String): DataFrame = sqlContext.sql(sqlText)
+  }
+
+  implicit class RichOptionRDD[T: ClassTag](private val rdd: RDD[Option[T]]) {
+    def flatten: RDD[T] = rdd.filter(_.isDefined).map(_.get)
   }
 
   implicit class RichPairRDD[K, V](private val rdd: RDD[(K, V)]) {
@@ -36,6 +50,22 @@ package object implicits {
     def flatMapPair[U: ClassTag](f: (K, V) => TraversableOnce[U]): RDD[U] = rdd.flatMap(x => f(x._1, x._2))
 
     def flatMapKeys[U](f: K => TraversableOnce[U]): RDD[(U, V)] = rdd.flatMap(x => f(x._1).map((_, x._2)))
+  }
+
+  implicit class RichKeyOptionRDD[K: ClassTag, V: ClassTag](private val rdd: RDD[(Option[K], V)]) {
+    def flatten: RDD[(K, V)] = rdd.filterByKey(_.isDefined).mapKeys(_.get)
+  }
+
+  implicit class RichValueOptionRDD[K: ClassTag, V: ClassTag](private val rdd: RDD[(K, Option[V])]) {
+    def flatten: RDD[(K, V)] = rdd.filterByValue(_.isDefined).mapValues(_.get)
+  }
+
+  implicit class RichTraversableOnceKeyRDD[K: ClassTag, V: ClassTag](private val rdd: RDD[(TraversableOnce[K], V)]) {
+    def flatten: RDD[(K, V)] = rdd.filterByKey(_.nonEmpty).flatMapKeys(identity)
+  }
+
+  implicit class RichTraversableOnceValueRDD[K: ClassTag, V: ClassTag](private val rdd: RDD[(K, TraversableOnce[V])]) {
+    def flatten: RDD[(K, V)] = rdd.filterByValue(_.nonEmpty).flatMapValues(identity)
   }
 
 }
