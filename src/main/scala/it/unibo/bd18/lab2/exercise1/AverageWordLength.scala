@@ -10,8 +10,7 @@ object AverageWordLength extends Ex1Base[String, Double] {
 
   override protected[this] def op(rdd: RDD[String]): Map[String, Double] = rdd
     .flatMap(_.tokenize)
-    .map(_.toLowerCase)
-    .map(x => (x.firstLetter, x.length))
+    .map(x => (x.firstLetter.toLowerCase, x.length))
     .groupByKey()
     .mapValues((x: Iterable[Int]) => x.sum / x.size.toDouble)
     .collect()

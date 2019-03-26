@@ -12,9 +12,9 @@ object InvertedIndex extends Ex1Base[String, Iterable[Long]] {
 
   override protected[this] def op(rdd: RDD[String]): Map[String, Iterable[Long]] = rdd
     .zipWithIndex()
-    .flatMapKeys(_.tokenize.map(_.toLowerCase))
-    .groupBy(_._1)
-    .mapValues(_.map(_._2))
+    .flatMapKeys(_.tokenize)
+    .mapKeys(_.toLowerCase)
+    .groupByKey()
     .collect()
     .toMap
 

@@ -11,6 +11,6 @@ trait SQLApp extends SparkAppBase {
 
   protected[this] final def sql: SQLContext = spark.sqlContext
 
-  protected[this] final def sql(sqlText: String): DataFrame = spark.sqlContext.sql(sqlText)
+  protected[this] final def sql(sqlText: String): DataFrame = spark.sql(sqlText)
 
 }
