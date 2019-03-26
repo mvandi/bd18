@@ -17,7 +17,7 @@ private[exercise1] trait Ex1Base[K, V] extends Lab2Base {
 
     prettyPrint("Capra", op(capraRDD))
     println()
-    prettyPrint("Divina Commedia", op(divinacommediaRDD))
+//    prettyPrint("Divina Commedia", op(divinacommediaRDD))
   }
 
 }

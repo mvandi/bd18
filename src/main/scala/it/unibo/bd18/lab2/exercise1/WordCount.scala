@@ -10,8 +10,7 @@ object WordCount extends Ex1Base[String, Int] {
 
   override protected[this] def op(rdd: RDD[String]): Map[String, Int] = rdd
     .flatMap(_.tokenize)
-    .map(_.toLowerCase)
-    .groupBy(identity)
+    .groupBy(_.toLowerCase)
     .mapValues(_.size)
     .collect()
     .toMap

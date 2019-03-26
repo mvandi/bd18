@@ -10,8 +10,7 @@ object WordLengthCount extends Ex1Base[Int, Int] {
 
   override protected[this] def op(rdd: RDD[String]): Map[Int, Int] = rdd
     .flatMap(_.tokenize)
-    .map(_.length)
-    .groupBy(identity)
+    .groupBy(_.length)
     .mapValues(_.size)
     .collect()
     .toMap
